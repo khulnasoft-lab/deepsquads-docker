@@ -1,0 +1,26 @@
+# Copyright © Michal Čihař <michal@weblate.org>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Docker Hub Description
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - README.md
+    - .github/workflows/readme-sync.yml
+jobs:
+  sync-readme:
+    runs-on: ubuntu-22.04
+    if: ${{ github.repository == 'WeblateOrg/docker'}}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v4
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: weblate/weblate
+        short-description: ${{ github.event.repository.description }}
